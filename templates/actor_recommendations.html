@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Recommend By Actor{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="font-size:32px; margin-bottom:8px;">&#127916; Recommend By Actor</h1>
+    <p style="color:#aaa; margin-bottom:24px;">Pick a popular star or search any actor from the CineMatch cast database.</p>
+
+    <section style="margin-bottom:28px;">
+        <h2 style="margin-bottom:12px;">Popular Actors</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px;">
+            {% for actor in popular_actors %}
+            <a href="/actor-recommendations?actor={{ actor }}"
+               style="background:{% if selected_actor == actor %}#e50914{% else %}#1f1f1f{% endif %}; border:1px solid {% if selected_actor == actor %}#e50914{% else %}#333{% endif %}; border-radius:8px; padding:16px; color:white; text-decoration:none; transition:transform .2s, border-color .2s;"
+               onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='#e50914';"
+               onmouseout="this.style.transform='none'; this.style.borderColor='{% if selected_actor == actor %}#e50914{% else %}#333{% endif %}';">
+                <div style="font-size:22px; margin-bottom:8px;">&#127902;</div>
+                <strong>{{ actor }}</strong>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <form method="GET" action="/actor-recommendations" style="background:#1f1f1f; border:1px solid #333; border-radius:8px; padding:22px; max-width:640px;">
+        <label for="actor" style="display:block; color:#ddd; font-size:14px; margin-bottom:8px;">Search Actor</label>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <input id="actor"
+                   name="actor"
+                   list="actor-suggestions"
+                   value="{{ selected_actor }}"
+                   placeholder="Type an actor name..."
+                   autocomplete="off"
+                   style="flex:1; min-width:240px; padding:11px; background:#333; color:white; border:1px solid #555; border-radius:5px; font-size:14px;">
+            <datalist id="actor-suggestions">
+                {% for actor in actors %}
+                <option value="{{ actor }}"></option>
+                {% endfor %}
+            </datalist>
+            <button class="btn" type="submit">Find Movies</button>
+        </div>
+    </form>
+
+    {% if selected_actor and results %}
+    <div style="margin-top:34px;">
+        <div style="background:#e50914; display:inline-block; padding:7px 13px; border-radius:20px; font-size:12px; font-weight:bold; margin-bottom:14px;">
+            Top Movies Featuring {{ selected_actor }}
+        </div>
+        <div class="movie-grid">
+            {% for movie in results %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% elif selected_actor %}
+    <div style="background:#1f1f1f; border:1px solid #333; border-radius:8px; padding:34px; text-align:center; margin-top:28px;">
+        <h3>No movies found for {{ selected_actor }}</h3>
+        <p style="color:#aaa; margin-top:8px;">Try another spelling or choose a popular actor.</p>
+    </div>
+    {% else %}
+    <div style="background:#1f1f1f; border:1px solid #333; border-radius:8px; padding:34px; text-align:center; margin-top:28px;">
+        <div style="font-size:48px;">&#127902;</div>
+        <h3 style="margin-top:12px;">Choose an Actor</h3>
+        <p style="color:#aaa; margin-top:8px;">Cards are quick picks; search covers the full actor database.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
