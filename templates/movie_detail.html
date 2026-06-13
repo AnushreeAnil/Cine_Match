@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="/" style="color:#aaa; text-decoration:none; font-size:13px;">&larr; Back to Home</a>
+
+    <div style="background:#141414; border:1px solid #282828; border-radius:12px; padding:28px; margin-top:20px; display:grid; grid-template-columns:220px minmax(0,1fr) 280px; gap:28px;">
+        <div style="background:linear-gradient(135deg,#e50914,#222); height:260px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:60px;">
+            &#127909;
+        </div>
+
+        <div>
+            <h1 style="font-size:32px; margin-bottom:8px;">{{ movie.title }}</h1>
+            <p style="color:#aaa;">{{ movie.year }} &nbsp;|&nbsp; {{ movie.genre }} &nbsp;|&nbsp; {{ movie.language }}</p>
+            <p style="color:#f5c518; margin-top:10px; font-size:18px;">&#11088; {{ movie.rating }} / 10</p>
+            <p style="margin-top:16px; color:#ddd; line-height:1.7;">{{ movie.description }}</p>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;">
+                {% if movie.imdb_link %}
+                <a href="{{ movie.imdb_link }}" target="_blank" rel="noopener noreferrer" class="btn">
+                    &#128279; View on IMDb
+                </a>
+                {% endif %}
+            </div>
+
+            <div style="margin-top:24px; display:grid; gap:14px;">
+                <form method="POST" action="/rate" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                    <input type="hidden" name="movie_id" value="{{ movie.id }}">
+                    <input type="text" name="username" placeholder="Your name" style="padding:10px; background:#1d1d1d; color:white; border:1px solid #333; border-radius:6px; min-width:160px;">
+                    <select name="rating" style="padding:10px; background:#1d1d1d; color:white; border:1px solid #333; border-radius:6px; min-width:160px;">
+                        <option value="10">&#11088; 10 - Masterpiece</option>
+                        <option value="9">&#11088; 9 - Excellent</option>
+                        <option value="8">&#11088; 8 - Great</option>
+                        <option value="7">&#11088; 7 - Good</option>
+                        <option value="6">&#11088; 6 - Okay</option>
+                        <option value="5">&#11088; 5 - Average</option>
+                    </select>
+                    <button type="submit" class="btn">Submit Rating</button>
+                </form>
+
+                {% if user %}
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <form method="POST" action="/favorite/{{ movie.id }}">
+                        <input type="hidden" name="action" value="{{ 'remove' if favorite else 'add' }}">
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="btn" style="background: {{ '#333' if favorite else '#e50914' }};">
+                            {{ 'Remove from Favorites' if favorite else 'Add to Favorites' }}
+                        </button>
+                    </form>
+                    <form method="POST" action="/watchlist/{{ movie.id }}">
+                        <input type="hidden" name="action" value="{{ 'remove' if watchlist else 'add' }}">
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="btn" style="background: {{ '#333' if watchlist else '#e50914' }};">
+                            {{ 'Remove from Watchlist' if watchlist else 'Add to Watchlist' }}
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <aside style="background:#171717; border:1px solid #282828; border-radius:12px; padding:22px;">
+            <h2 style="font-size:18px; margin-bottom:14px;">Movie Details</h2>
+            <div style="display:grid; gap:12px;">
+                <div>
+                    <div style="color:#777; font-size:12px;">Language</div>
+                    <div>{{ movie.language }}</div>
+                </div>
+                <div>
+                    <div style="color:#777; font-size:12px;">Director</div>
+                    <div>{{ movie.director }}</div>
+                </div>
+                <div>
+                    <div style="color:#777; font-size:12px;">Cast</div>
+                    <div style="line-height:1.5;">{{ movie.cast }}</div>
+                </div>
+                <div>
+                    <div style="color:#777; font-size:12px;">Rating</div>
+                    <div>{{ movie.rating }} / 10</div>
+                </div>
+                <div>
+                    <div style="color:#777; font-size:12px;">Year</div>
+                    <div>{{ movie.year }}</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    {% if recommendations %}
+    <div style="margin-top:36px;">
+        <h2>&#127919; Similar Movies</h2>
+        <p style="color:#aaa; margin-top:5px; margin-bottom:16px;">Recommended based on genre, language, director, and cast.</p>
+        <div class="movie-grid">
+            {% for rec in recommendations %}
+            <a href="/movie/{{ rec.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ rec.title }}</div>
+                    <div class="genre">{{ rec.genre.split(',')[0] }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ rec.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ rec.rating }} &nbsp; {{ rec.year }}</div>
+                    <div style="font-size:12px; color:#e50914; margin-top:8px; font-weight:bold;">{{ rec.similarity_score }}% match</div>
+                    <div class="reason-list">
+                        {% for reason in rec.reasons %}
+                        <span class="reason-chip">{{ reason }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

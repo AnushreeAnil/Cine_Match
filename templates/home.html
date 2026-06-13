@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}CineMatch - Home{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(to bottom, #1b0909, #111111); padding: 58px 40px; text-align: center;">
+    <h1 style="font-size: 44px; color: #e50914; margin-bottom: 14px;">&#127909; CineMatch</h1>
+    <p style="font-size: 18px; color: #ccc; margin-bottom: 28px;">Discover movies you'll love with smart, personality-aware recommendations.</p>
+    <a href="/recommend" class="btn" style="font-size: 16px; padding: 14px 32px;">Find Your Next Movie</a>
+</div>
+
+<div class="container">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:32px;">
+        <div style="background:#1f1f1f; border:1px solid #333; border-radius:10px; padding:18px;">
+            <div style="color:#f5c518; font-size:24px; font-weight:bold;">{{ stats.movies }}</div>
+            <div style="color:#aaa; font-size:12px; margin-top:6px;">Movies in Catalog</div>
+        </div>
+        <div style="background:#1f1f1f; border:1px solid #333; border-radius:10px; padding:18px;">
+            <div style="color:#f5c518; font-size:24px; font-weight:bold;">{{ stats.languages }}</div>
+            <div style="color:#aaa; font-size:12px; margin-top:6px;">Languages Supported</div>
+        </div>
+        <div style="background:#1f1f1f; border:1px solid #333; border-radius:10px; padding:18px;">
+            <div style="color:#f5c518; font-size:24px; font-weight:bold;">{{ mood_cards|length }}</div>
+            <div style="color:#aaa; font-size:12px; margin-top:6px;">Mood Picks</div>
+        </div>
+    </div>
+
+    <section style="margin-bottom:34px;">
+        <h2>&#127855; How Are You Feeling Tonight?</h2>
+        <p style="color:#aaa; margin-top:5px; margin-bottom:18px;">Choose a mood and let CineMatch narrow down the best movies for your evening.</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:14px;">
+            {% for mood, icon in mood_cards %}
+            <a href="/discover?mood={{ mood }}"
+               style="background:#1f1f1f; border:1px solid #333; border-radius:10px; padding:20px; color:white; text-decoration:none; display:flex; align-items:center; gap:12px; transition:transform .2s, border-color .2s, background .2s;">
+                <span style="font-size:28px;">{{ icon|safe }}</span>
+                <strong>{{ mood }}</strong>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if user and recommended_movies %}
+    <section style="margin-bottom:36px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
+            <div>
+                <h2>&#127919; Recommended For You</h2>
+                <p style="color:#aaa; margin-top:4px;">Personal picks based on your quiz and favorite genre.</p>
+            </div>
+            <a href="/profile" class="btn">View Profile</a>
+        </div>
+
+        <div class="movie-grid">
+            {% for movie in recommended_movies %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre.split(',')[0] }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if user and favorites %}
+    <section style="margin-bottom:36px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
+            <div>
+                <h2>&#10084; Favorites</h2>
+                <p style="color:#aaa; margin-top:4px;">Quick access to the movies you loved.</p>
+            </div>
+            <a href="/profile" class="btn">Manage Favorites</a>
+        </div>
+
+        <div class="movie-grid">
+            {% for movie in favorites[:6] %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre.split(',')[0] }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if user and watchlist %}
+    <section style="margin-bottom:36px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
+            <div>
+                <h2>&#128218; Watchlist</h2>
+                <p style="color:#aaa; margin-top:4px;">Keep your next movies ready to watch.</p>
+            </div>
+            <a href="/profile" class="btn">View Watchlist</a>
+        </div>
+
+        <div class="movie-grid">
+            {% for movie in watchlist[:6] %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre.split(',')[0] }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section style="margin-bottom:36px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
+            <div>
+                <h2>&#128293; Trending Indian Movies</h2>
+                <p style="color:#aaa; margin-top:4px;">Popular and highly rated regional movies from the catalog.</p>
+            </div>
+            <a href="/movies" class="btn">Browse All</a>
+        </div>
+
+        <div class="movie-grid">
+            {% for movie in trending_movies %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre.split(',')[0] }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <h2>&#11088; Top Rated Movies</h2>
+        <p style="color: #aaa; margin-bottom: 10px;">Click any movie to discover similar titles and save your favorites.</p>
+        <div class="movie-grid">
+            {% for movie in movies %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre.split(',')[0] }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

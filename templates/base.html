@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CineMatch{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #101010;
+            color: #f2f2f2;
+        }
+
+        nav {
+            background-color: #121212;
+            padding: 16px 36px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 2px solid #e50914;
+            flex-wrap: wrap;
+        }
+
+        nav .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e50914;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        nav a:hover { color: #fff; }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .search-bar input {
+            padding: 9px 14px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #202020;
+            color: white;
+            font-size: 14px;
+            width: 220px;
+        }
+
+        .search-bar button {
+            padding: 9px 16px;
+            background: #e50914;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 28px 20px;
+        }
+
+        .flash-container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 18px 20px;
+        }
+
+        .flash {
+            background: #181818;
+            border: 1px solid #333;
+            border-left: 4px solid #e50914;
+            padding: 12px 14px;
+            color: #f5f5f5;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .movie-card {
+            background: #161616;
+            border: 1px solid #252525;
+            border-radius: 10px;
+            overflow: hidden;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            display: block;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            border-color: #e50914;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.4);
+        }
+
+        .movie-card .poster {
+            background: linear-gradient(135deg, #e50914, #222);
+            height: 145px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .movie-card .info {
+            padding: 14px;
+        }
+
+        .movie-card .title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .movie-card .genre {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .movie-card .rating {
+            font-size: 13px;
+            color: #f5c518;
+        }
+
+        .meta-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin: 8px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            border-radius: 18px;
+            padding: 5px 10px;
+            font-size: 11px;
+            line-height: 1;
+            border: 1px solid #333;
+            color: #ddd;
+            background: #1f1f1f;
+        }
+
+        .badge-language {
+            border-color: #2a6a2a;
+            background: #183018;
+        }
+
+        .reason-list {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .reason-chip {
+            color: #f5c518;
+            border: 1px solid #5a4612;
+            background: #241d10;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 11px;
+        }
+
+        h1, h2, h3 {
+            color: #fff;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 22px;
+            background: #e50914;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover { background: #b0070f; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            margin-top: 42px;
+            border-top: 1px solid #222;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo">🎬 CineMatch</a>
+        <div class="nav-links">
+            {% if user %}
+                <a href="/">Home</a>
+                <a href="/discover">Discover</a>
+                <a href="/actor-recommendations">Actors</a>
+                <a href="/quiz">Quiz</a>
+                <a href="/profile">Profile</a>
+            {% endif %}
+        </div>
+
+        <div class="nav-right">
+            {% if user %}
+                <span style="color:#ccc; font-size:14px;">Hi, {{ user.name }}</span>
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            {% endif %}
+        </div>
+
+        {% if user %}
+        <form class="search-bar" action="/search" method="GET">
+            <input type="text" name="q" placeholder="Search movies..." />
+            <button type="submit">Search</button>
+        </form>
+        {% endif %}
+    </nav>
+
+    {% if get_flashed_messages() %}
+    <div class="flash-container">
+        {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer>
+        <p>CineMatch - Movie Recommendation System | BCA Final Year Project | Anushree Anil</p>
+    </footer>
+</body>
+</html>

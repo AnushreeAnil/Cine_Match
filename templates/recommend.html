@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Get Recommendations{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>&#127919; Get Movie Recommendations</h2>
+    <p style="color:#aaa; margin-top:6px; margin-bottom:24px;">Select a movie you like and CineMatch will find similar titles using genre, language, director, and cast.</p>
+
+    <form method="POST" action="/recommend" style="background:#141414; padding:24px; border-radius:12px; max-width:540px;">
+        <label style="font-size:15px; color:#ccc;">Choose a movie you like:</label><br><br>
+        <select name="movie_title" style="width:100%; padding:12px; background:#1d1d1d; color:white; border:1px solid #333; border-radius:8px; font-size:14px;">
+            {% for movie in movies %}
+            <option value="{{ movie.title }}" {% if selected_movie == movie.title %}selected{% endif %}>
+                {{ movie.title }} ({{ movie.year }}) - {{ movie.language }}
+            </option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <button type="submit" class="btn" style="width:100%;">Find Similar Movies</button>
+    </form>
+
+    {% if recommendations %}
+    <div style="margin-top: 36px;">
+        <h2>Movies Similar to "{{ selected_movie }}"</h2>
+        <p style="color:#aaa; margin-top:5px; margin-bottom:16px;">Sorted by similarity score</p>
+
+        <div class="movie-grid">
+            {% for movie in recommendations %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                    <div style="font-size:12px; color:#e50914; margin-top:8px; font-weight:bold;">{{ movie.similarity_score }}% match</div>
+                    <div class="reason-list">
+                        {% for reason in movie.reasons %}
+                        <span class="reason-chip">{{ reason }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

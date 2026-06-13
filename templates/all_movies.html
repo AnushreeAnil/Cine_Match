@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}All Movies{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>&#127909; All Movies</h2>
+    <p style="color:#aaa; margin-top:5px; margin-bottom:16px;">Filter by genre, language, or browse the full catalog.</p>
+
+    <p style="color:#aaa; font-size:13px; margin-bottom:8px;">Filter by Genre:</p>
+    <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+        <a href="/movies" style="padding:7px 16px; background:{% if not genre_filter %}#e50914{% else %}#333{% endif %}; color:white; border-radius:20px; text-decoration:none; font-size:13px;">All</a>
+        {% for g in ["Action","Drama","Comedy","Sci-Fi","Crime","Animation","Romance","Thriller","Biography","Sport"] %}
+        <a href="/movies?genre={{ g }}" style="padding:7px 16px; background:{% if genre_filter == g %}#e50914{% else %}#333{% endif %}; color:white; border-radius:20px; text-decoration:none; font-size:13px;">{{ g }}</a>
+        {% endfor %}
+    </div>
+
+    <p style="color:#aaa; font-size:13px; margin-bottom:8px;">Filter by Language:</p>
+    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+        {% for lang in ["Hindi","Malayalam","Kannada","Tamil","Telugu","Bengali","Marathi","Punjabi","Gujarati","Assamese","Odia","Tulu"] %}
+        <a href="/movies?language={{ lang }}" style="padding:7px 16px; background:{% if language_filter == lang %}#e50914{% else %}#1a3a1a{% endif %}; color:white; border-radius:20px; text-decoration:none; font-size:13px; border:1px solid #2a6a2a;">{{ lang }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="movie-grid">
+        {% for movie in movies %}
+        <a href="/movie/{{ movie.id }}" class="movie-card">
+            <div class="poster">&#127909;</div>
+            <div class="info">
+                <div class="title">{{ movie.title }}</div>
+                <div class="genre">{{ movie.genre.split(',')[0] }}</div>
+                <div class="meta-badges">
+                    <span class="badge badge-language">{{ movie.language }}</span>
+                </div>
+                <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

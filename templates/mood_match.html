@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% block title %}Discover Movies{% endblock %}
+
+{% block content %}
+<div class="container">
+    <style>
+        .discover-header {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 24px;
+            align-items: end;
+            margin-bottom: 24px;
+        }
+
+        .discover-title {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .discover-subtitle {
+            color: #aaa;
+            font-size: 16px;
+            line-height: 1.5;
+            max-width: 680px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(130px, 1fr));
+            gap: 12px;
+            min-width: 420px;
+        }
+
+        .stat-box {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .stat-value {
+            color: #f5c518;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .discover-form {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 22px;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .filter-group label {
+            display: block;
+            color: #ddd;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            min-height: 42px;
+            padding: 10px;
+            background: #1d1d1d;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .discover-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .discover-actions .btn {
+            min-height: 42px;
+            width: 100%;
+        }
+
+        .empty-state {
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 10px;
+            margin-top: 30px;
+            padding: 42px 24px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 54px;
+            margin-bottom: 14px;
+        }
+
+        .empty-state h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .result-heading {
+            margin-top: 34px;
+        }
+
+        .match-badge {
+            background: #e50914;
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .result-note {
+            color: #aaa;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .discover-header {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                min-width: 0;
+            }
+
+            .discover-form {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .discover-title {
+                font-size: 26px;
+            }
+
+            .stats-row,
+            .discover-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <div class="discover-header">
+        <div>
+            <h1 class="discover-title">&#127917; Discover Movies</h1>
+            <p class="discover-subtitle">
+                Pick a mood, genre, language, and release period to find movies that match the way tonight should feel.
+            </p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-value">{{ stats.movies }}</div>
+                <div class="stat-label">Movies Available</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">{{ stats.languages }}</div>
+                <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">{{ stats.moods }}</div>
+                <div class="stat-label">Mood Categories</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">{{ stats.released }}</div>
+                <div class="stat-label">Release Periods</div>
+            </div>
+        </div>
+    </div>
+
+    <form class="discover-form" method="POST">
+        <div class="filter-group">
+            <label for="mood">Mood</label>
+            <select id="mood" name="mood">
+                <option value="">Any Mood</option>
+                {% for mood in moods %}
+                <option value="{{ mood }}" {% if selected_filters.mood == mood %}selected{% endif %}>{{ mood }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="genre">Genre</label>
+            <select id="genre" name="genre">
+                <option value="">Any Genre</option>
+                {% for genre in genres %}
+                <option value="{{ genre }}" {% if selected_filters.genre == genre %}selected{% endif %}>{{ genre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="language">Language</label>
+            <select id="language" name="language">
+                <option value="">Any Language</option>
+                {% for language in languages %}
+                <option value="{{ language }}" {% if selected_filters.language == language %}selected{% endif %}>{{ language }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="year">Release Period</label>
+            <select id="year" name="year">
+                <option value="">Any Period</option>
+                {% for value, label in release_periods %}
+                <option value="{{ value }}" {% if selected_filters.year == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="discover-actions">
+            <button class="btn" type="submit">&#128269; Find Movies</button>
+        </div>
+    </form>
+
+    {% if not has_searched %}
+    <div class="empty-state">
+        <div class="empty-icon">&#127871;</div>
+        <h3>Ready for Movie Night?</h3>
+        <p>Select your mood, language and preferences to discover your next favorite movie.</p>
+    </div>
+    {% elif not results %}
+    <div class="empty-state">
+        <div class="empty-icon">&#127909;</div>
+        <h3>No Matches Found</h3>
+        <p>Try relaxing one filter or choosing a different mood.</p>
+    </div>
+    {% endif %}
+
+    {% if results %}
+    <div class="result-heading">
+        <div class="match-badge">Top Matches For Your Preferences</div>
+        <h2>Recommended Movies</h2>
+        <p class="result-note">Showing the highest-rated movies matching your selected preferences.</p>
+
+        <div class="movie-grid">
+            {% for movie in results %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

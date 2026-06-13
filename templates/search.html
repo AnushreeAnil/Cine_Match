@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Search - {{ query }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>&#128269; Search Results for "{{ query }}"</h2>
+    <p style="color:#aaa; margin-top:5px; margin-bottom:20px;">{{ results|length }} result(s) found</p>
+
+    {% if results %}
+    <div class="movie-grid">
+        {% for movie in results %}
+        <a href="/movie/{{ movie.id }}" class="movie-card">
+            <div class="poster">&#127909;</div>
+            <div class="info">
+                <div class="title">{{ movie.title }}</div>
+                <div class="genre">{{ movie.genre }}</div>
+                <div class="meta-badges">
+                    <span class="badge badge-language">{{ movie.language }}</span>
+                </div>
+                <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="background:#141414; border:1px solid #222; border-radius:10px; padding:28px; text-align:center;">
+        <h3 style="color:#fff;">No movies found</h3>
+        <p style="color:#aaa;">Try a different title, language, or actor name.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

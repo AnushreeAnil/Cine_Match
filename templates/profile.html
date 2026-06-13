@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}My Profile - CineMatch{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:900px;">
+    <div style="display:grid; grid-template-columns:1fr 320px; gap:24px; align-items:start; margin-bottom:28px;">
+        <div>
+            <h2>Welcome back, {{ user.name }}</h2>
+            <p style="color:#aaa; margin-top:8px;">Your profile stores preferences, favorites, watchlist, and personalized recommendations.</p>
+
+            <div style="background:#141414; border:1px solid #222; border-radius:12px; padding:22px; margin-top:20px;">
+                <h3 style="margin-bottom:12px;">Your Preferences</h3>
+                <p style="color:#ddd; margin-bottom:8px;"><strong>Genre:</strong> {{ preferences.favorite_genre or 'Not set' }}</p>
+                <p style="color:#ddd; margin-bottom:8px;"><strong>Language:</strong> {{ preferences.favorite_language or 'Not set' }}</p>
+                <p style="color:#ddd;"><strong>Personality:</strong> {{ preferences.personality_type or 'Not set' }}</p>
+            </div>
+
+            <div style="background:#141414; border:1px solid #222; border-radius:12px; padding:22px; margin-top:20px;">
+                <h3 style="margin-bottom:16px;">Profile Actions</h3>
+                <a href="/quiz" class="btn" style="margin-right:12px;">Update Quiz</a>
+                <a href="/recommend" class="btn">Find Similar Movies</a>
+            </div>
+        </div>
+
+        <aside style="background:#141414; border:1px solid #222; border-radius:12px; padding:22px;">
+            <h3 style="margin-bottom:14px;">Account Summary</h3>
+            <p style="color:#aaa; margin-bottom:8px;"><strong>Email:</strong> {{ user.email }}</p>
+            <p style="color:#aaa; margin-bottom:8px;"><strong>Joined:</strong> {{ user.created_at }}</p>
+            <p style="color:#aaa;"><strong>Favorites:</strong> {{ favorites|length }}</p>
+            <p style="color:#aaa;"><strong>Watchlist:</strong> {{ watchlist|length }}</p>
+        </aside>
+    </div>
+
+    <section style="margin-bottom:28px;">
+        <h3>Favorites</h3>
+        {% if favorites %}
+        <div class="movie-grid">
+            {% for movie in favorites %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre.split(',')[0] }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color:#aaa;">You have no favorite movies yet. Browse the catalog and save your top picks.</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h3>Watchlist</h3>
+        {% if watchlist %}
+        <div class="movie-grid">
+            {% for movie in watchlist %}
+            <a href="/movie/{{ movie.id }}" class="movie-card">
+                <div class="poster">&#127909;</div>
+                <div class="info">
+                    <div class="title">{{ movie.title }}</div>
+                    <div class="genre">{{ movie.genre.split(',')[0] }}</div>
+                    <div class="meta-badges">
+                        <span class="badge badge-language">{{ movie.language }}</span>
+                    </div>
+                    <div class="rating">&#11088; {{ movie.rating }} &nbsp; {{ movie.year }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color:#aaa;">Your watchlist is empty. Add movies to review later.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

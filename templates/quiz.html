@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Personality Quiz - CineMatch{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:760px;">
+    <h2 style="margin-bottom:14px;">Movie Personality Quiz</h2>
+    <p style="color:#aaa; margin-bottom:24px;">Answer a few quick questions and CineMatch will tailor the movie recommendations to your taste.</p>
+
+    <form method="POST" action="/quiz" style="background:#141414; border:1px solid #222; border-radius:12px; padding:28px;">
+        <div style="margin-bottom:20px;">
+            <label style="display:block; color:#ddd; margin-bottom:10px;">What kind of story do you enjoy most?</label>
+            <select name="favorite_genre" required style="width:100%; padding:12px; background:#1d1d1d; color:white; border:1px solid #333; border-radius:8px;">
+                <option value="">Select a genre</option>
+                <option value="Action" {% if preferences and preferences.favorite_genre == 'Action' %}selected{% endif %}>Action</option>
+                <option value="Drama" {% if preferences and preferences.favorite_genre == 'Drama' %}selected{% endif %}>Drama</option>
+                <option value="Comedy" {% if preferences and preferences.favorite_genre == 'Comedy' %}selected{% endif %}>Comedy</option>
+                <option value="Romance" {% if preferences and preferences.favorite_genre == 'Romance' %}selected{% endif %}>Romance</option>
+                <option value="Thriller" {% if preferences and preferences.favorite_genre == 'Thriller' %}selected{% endif %}>Thriller</option>
+                <option value="Biography" {% if preferences and preferences.favorite_genre == 'Biography' %}selected{% endif %}>Biography</option>
+                <option value="Sports" {% if preferences and preferences.favorite_genre == 'Sports' %}selected{% endif %}>Sports</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <label style="display:block; color:#ddd; margin-bottom:10px;">Which language do you prefer?</label>
+            <select name="favorite_language" required style="width:100%; padding:12px; background:#1d1d1d; color:white; border:1px solid #333; border-radius:8px;">
+                <option value="">Select a language</option>
+                <option value="Hindi" {% if preferences and preferences.favorite_language == 'Hindi' %}selected{% endif %}>Hindi</option>
+                <option value="Malayalam" {% if preferences and preferences.favorite_language == 'Malayalam' %}selected{% endif %}>Malayalam</option>
+                <option value="Tamil" {% if preferences and preferences.favorite_language == 'Tamil' %}selected{% endif %}>Tamil</option>
+                <option value="Telugu" {% if preferences and preferences.favorite_language == 'Telugu' %}selected{% endif %}>Telugu</option>
+                <option value="Kannada" {% if preferences and preferences.favorite_language == 'Kannada' %}selected{% endif %}>Kannada</option>
+                <option value="Bengali" {% if preferences and preferences.favorite_language == 'Bengali' %}selected{% endif %}>Bengali</option>
+                <option value="Marathi" {% if preferences and preferences.favorite_language == 'Marathi' %}selected{% endif %}>Marathi</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <label style="display:block; color:#ddd; margin-bottom:10px;">How would you describe your movie mood?</label>
+            <select name="personality_type" required style="width:100%; padding:12px; background:#1d1d1d; color:white; border:1px solid #333; border-radius:8px;">
+                <option value="">Select a personality</option>
+                <option value="Action Explorer" {% if preferences and preferences.personality_type == 'Action Explorer' %}selected{% endif %}>Action Explorer</option>
+                <option value="Romantic Dreamer" {% if preferences and preferences.personality_type == 'Romantic Dreamer' %}selected{% endif %}>Romantic Dreamer</option>
+                <option value="Mystery Hunter" {% if preferences and preferences.personality_type == 'Mystery Hunter' %}selected{% endif %}>Mystery Hunter</option>
+                <option value="Family Movie Lover" {% if preferences and preferences.personality_type == 'Family Movie Lover' %}selected{% endif %}>Family Movie Lover</option>
+                <option value="Emotional Storyteller" {% if preferences and preferences.personality_type == 'Emotional Storyteller' %}selected{% endif %}>Emotional Storyteller</option>
+                <option value="Adventure Seeker" {% if preferences and preferences.personality_type == 'Adventure Seeker' %}selected{% endif %}>Adventure Seeker</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn" style="width:100%;">Save Preferences</button>
+    </form>
+</div>
+{% endblock %}

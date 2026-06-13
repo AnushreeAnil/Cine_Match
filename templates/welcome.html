@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Welcome - CineMatch{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:80px; max-width:900px;">
+    <div style="display:grid; grid-template-columns:1fr 400px; gap:40px; align-items:center; min-height:calc(100vh - 140px);">
+        <div>
+            <p style="color:#e50914; letter-spacing:2px; margin-bottom:24px; font-size:14px;">CINEMATCH</p>
+            <h1 style="font-size:54px; line-height:1.03; margin-bottom:24px; color:#fff;">Discover movies tailored to your personality.</h1>
+            <p style="color:#bbb; font-size:17px; line-height:1.7; margin-bottom:36px; max-width:520px;">CineMatch helps you find the right movie mood with curated recommendations, favorites, and a watchlist designed for your style.</p>
+            <div style="display:flex; gap:16px; flex-wrap:wrap;">
+                <a href="/login" class="btn" style="padding:16px 30px; font-size:15px;">Login</a>
+                <a href="/register" class="btn" style="padding:16px 30px; font-size:15px; background:#222; border:1px solid #444;">Register</a>
+            </div>
+        </div>
+
+        <div style="background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.8)), #121212; border:1px solid #222; border-radius:24px; padding:36px;">
+            <h2 style="color:#fff; margin-bottom:18px;">What you get</h2>
+            <ul style="list-style:none; color:#ccc; line-height:2; font-size:15px; padding:0; margin:0;">
+                <li>• Personalized movie recommendations</li>
+                <li>• Mood-based discovery</li>
+                <li>• Save favorites and watchlist</li>
+                <li>• Profile quiz to refine suggestions</li>
+                <li>• Secure login with password hashing</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
